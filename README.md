@@ -5,6 +5,9 @@
 <li>GPT-2 model was trained on scripts written in Julia Language.</li>
 </ol>
 
+![image](https://user-images.githubusercontent.com/47806749/144979670-8ff35ecd-7a9f-4a46-829f-54151959751b.png)
+<p align="center">The complete worklfow including the data pre-processing.</p >
+
 <h2>Steps to get started with fine-tuning the GPT-2 model on Julia scripts</h2>
 
 ``` 
@@ -28,6 +31,34 @@ variants available are ```{"distilgpt2": "distilgpt2", "gpt2": "gpt2", "gpt2_med
 ```
 python train.py --model_select distilgpt2
 ```
-<h2>Predicting the next sequence of codes
-<ol>
-<li>
+<h2>Predicting the next sequence of codes</h2>
+The fine-tuned model is saved in <i><b>/model/distilgpt2_fine_tuned_coder/0_GPTSingleHead</b></i>
+
+To start with the predictions execute the following block of codes
+```python
+from transformers import AutoTokenizer,AutoModelWithLMHead
+tokenizer = AutoTokenizer.from_pretrained("/model/distilgpt2_fine_tuned_coder/0_GPTSingleHead")
+model = AutoModelWithLMHead.from_pretrained("/model/distilgpt2_fine_tuned_coder/0_GPTSingleHead")
+# or
+# tokenizer = AutoTokenizer.from_pretrained("congcongwang/distilgpt2_fine_tuned_coder")
+# model = AutoModelWithLMHead.from_pretrained("congcongwang/distilgpt2_fine_tuned_coder")
+use_cuda=True
+context="def factorial"
+lang="python" # The framework is build completely upon Python
+
+if use_cuda:
+    model.to("cuda")
+
+input_ids = tokenizer.encode("<python> " + context,
+                                     return_tensors='pt') if lang == "python" else tokenizer.encode(
+            "<java> " + context, return_tensors='pt')
+outputs = model.generate(input_ids=input_ids.to("cuda") if use_cuda else input_ids,
+                         max_length=30,
+                         temperature=0.7,
+                         num_return_sequences=1)
+
+decoded = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(decoded)
+
+```
+ 
