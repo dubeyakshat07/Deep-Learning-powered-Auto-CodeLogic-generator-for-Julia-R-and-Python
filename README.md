@@ -39,9 +39,7 @@ To start with the predictions execute the following block of codes
 from transformers import AutoTokenizer,AutoModelWithLMHead
 tokenizer = AutoTokenizer.from_pretrained("/model/distilgpt2_fine_tuned_coder/0_GPTSingleHead")
 model = AutoModelWithLMHead.from_pretrained("/model/distilgpt2_fine_tuned_coder/0_GPTSingleHead")
-# or
-# tokenizer = AutoTokenizer.from_pretrained("congcongwang/distilgpt2_fine_tuned_coder")
-# model = AutoModelWithLMHead.from_pretrained("congcongwang/distilgpt2_fine_tuned_coder")
+
 use_cuda=True
 context="def factorial"
 lang="python" # The framework is build completely upon Python
